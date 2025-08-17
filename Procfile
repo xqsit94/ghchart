@@ -1,1 +1,1 @@
-web: ./ghchart
+web: ./server

@@ -1,4 +1,4 @@
-package main
+package chart
 
 import (
 	"fmt"
@@ -6,33 +6,32 @@ import (
 	"strings"
 )
 
-// Color schemes
-var defaultColors = []string{"#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"}
-var halloweenColors = []string{"#ebedf0", "#fdf156", "#ffc722", "#ff9500", "#fe6d00"}
-var tealColors = []string{"#ebedf0", "#c6f7d0", "#7fcdcd", "#49a3a3", "#2d7d79"}
+var (
+	DefaultColors   = []string{"#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"}
+	HalloweenColors = []string{"#ebedf0", "#fdf156", "#ffc722", "#ff9500", "#fe6d00"}
+	TealColors      = []string{"#ebedf0", "#c6f7d0", "#7fcdcd", "#49a3a3", "#2d7d79"}
+)
 
-func getColorScheme(baseColor string) []string {
+func GetColorScheme(baseColor string) []string {
 	if baseColor == "" {
-		return defaultColors
+		return DefaultColors
 	}
 	
-	// Handle special themes
 	switch strings.ToLower(baseColor) {
 	case "halloween":
-		return halloweenColors
+		return HalloweenColors
 	case "teal":
-		return tealColors
+		return TealColors
 	case "default":
-		return defaultColors
+		return DefaultColors
 	}
 	
-	// Generate color scheme from hex color
 	if !strings.HasPrefix(baseColor, "#") {
 		baseColor = "#" + baseColor
 	}
 	
 	if !isValidHex(baseColor) {
-		return defaultColors
+		return DefaultColors
 	}
 	
 	return generateColorScheme(baseColor)
@@ -40,11 +39,11 @@ func getColorScheme(baseColor string) []string {
 
 func generateColorScheme(baseColor string) []string {
 	return []string{
-		"#ebedf0",                    // No contributions
-		lightenColor(baseColor, 0.7), // Light
-		baseColor,                    // Medium
-		darkenColor(baseColor, 0.8),  // Dark
-		darkenColor(baseColor, 0.6),  // Darkest
+		"#ebedf0",
+		lightenColor(baseColor, 0.7),
+		baseColor,
+		darkenColor(baseColor, 0.8),
+		darkenColor(baseColor, 0.6),
 	}
 }
 

@@ -1,81 +1,3 @@
-package main
-
-import (
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-)
-
-func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
-	r := chi.NewRouter()
-
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-	r.Use(middleware.SetHeader("Cache-Control", "public, max-age=86400"))
-
-	r.Get("/", indexHandler)
-	r.Get("/{username}", chartHandler)
-	r.Get("/{color}/{username}", colorChartHandler)
-
-	fmt.Printf("Server starting on port %s\n", port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
-}
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, indexHTML)
-}
-
-func chartHandler(w http.ResponseWriter, r *http.Request) {
-	username := chi.URLParam(r, "username")
-	if username == "" {
-		http.Error(w, "Username is required", http.StatusBadRequest)
-		return
-	}
-
-	username = removeExtension(username, ".svg")
-
-	chart, err := generateChart(username, "")
-	if err != nil {
-		http.Error(w, "Failed to generate chart", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "image/svg+xml")
-	w.Write(chart)
-}
-
-func colorChartHandler(w http.ResponseWriter, r *http.Request) {
-	color := chi.URLParam(r, "color")
-	username := chi.URLParam(r, "username")
-
-	if username == "" || color == "" {
-		http.Error(w, "Username and color are required", http.StatusBadRequest)
-		return
-	}
-
-	username = removeExtension(username, ".svg")
-
-	chart, err := generateChart(username, color)
-	if err != nil {
-		http.Error(w, "Failed to generate chart", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "image/svg+xml")
-	w.Write(chart)
-}
-
-const indexHTML = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -201,11 +123,11 @@ const indexHTML = `
 </head>
 <body>
     <div class="header">
-        <h1>GitHub Chart API</h1>
+        <h1>🔥 GitHub Chart API</h1>
         <p>Embed GitHub contribution charts as SVG images</p>
     </div>
-
-    <h2>Quick Start</h2>
+    
+    <h2>🚀 Quick Start</h2>
     <div class="examples-grid">
         <div class="example">
             <h3>Default Chart</h3>
@@ -216,7 +138,7 @@ const indexHTML = `
                 <p><small>Example: Linus Torvalds' contributions</small></p>
             </div>
         </div>
-
+        
         <div class="example">
             <h3>Custom Colors</h3>
             <code class="api-url">GET</code> <code>/{hex-color}/{username}</code>
@@ -227,10 +149,10 @@ const indexHTML = `
             </div>
         </div>
     </div>
-
+    
     <div class="examples-grid">
         <div class="examples-list">
-            <h3>Color Themes</h3>
+            <h3>🎨 Color Themes</h3>
             <p>Use any hex color to generate custom themes:</p>
             <div class="color-themes">
                 <div class="color-sample">
@@ -252,9 +174,9 @@ const indexHTML = `
             </div>
             <p><small>Or use special themes: <code>halloween</code>, <code>teal</code></small></p>
         </div>
-
+        
         <div class="examples-list">
-            <h3>API Examples</h3>
+            <h3>📖 API Examples</h3>
             <ul>
                 <li><code>/octocat</code> - GitHub mascot (empty chart)</li>
                 <li><code>/torvalds</code> - Linus Torvalds</li>
@@ -264,8 +186,8 @@ const indexHTML = `
             </ul>
         </div>
     </div>
-
-    <h2>Usage</h2>
+    
+    <h2>💡 Usage</h2>
     <div class="example">
         <h3>Embed in Markdown</h3>
         <code>![GitHub Chart](https://your-domain.com/username)</code>
@@ -276,11 +198,10 @@ const indexHTML = `
         <h3>Direct SVG Access</h3>
         <code>https://your-domain.com/username.svg</code>
     </div>
-
+    
     <div class="footer">
-        <p><strong>GitHub Chart API</strong> - Built with Go & Chi Router</p>
+        <p>🚀 <strong>GitHub Chart API</strong> - Built with Go & Chi Router</p>
         <p>Fetches real-time contribution data from GitHub profiles</p>
     </div>
 </body>
 </html>
-`
