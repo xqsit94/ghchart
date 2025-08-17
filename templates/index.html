@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Chart API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1e293b;
+        }
+        
+        body.light-mode .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.2), transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.25), transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.15), transparent 50%);
+            z-index: -1;
+        }
+        
+        body.dark-mode {
+            background: #0f0f23;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, #6366f140, transparent 50%),
+                radial-gradient(circle at 80% 20%, #8b5cf640, transparent 50%),
+                radial-gradient(circle at 40% 80%, #06b6d440, transparent 50%);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .container {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        body.dark-mode .container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        
+        body.light-mode .logo {
+            background: linear-gradient(135deg, #1e293b, #475569, #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
+        }
+        
+        body.dark-mode .logo {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        body.light-mode .tagline {
+            color: #334155;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        
+        body.dark-mode .tagline {
+            color: #a1a1aa;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .demo-card {
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .demo-card {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        body.light-mode .demo-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        body.dark-mode .demo-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark-mode .demo-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .demo-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        body.light-mode .demo-title {
+            color: #1e293b;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .demo-subtitle {
+            color: #475569;
+        }
+        
+        body.dark-mode .demo-title {
+            color: #ffffff;
+        }
+        
+        body.dark-mode .demo-subtitle {
+            color: #a1a1aa;
+        }
+        
+        .demo-subtitle {
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        
+        .endpoint {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: 0.025em;
+        }
+        
+        .chart-preview {
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        body.light-mode .chart-preview {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        body.dark-mode .chart-preview {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .chart-preview img {
+            max-width: 100%;
+            border-radius: 8px;
+            filter: brightness(1.1);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .info-card {
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        body.light-mode .info-card {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        body.dark-mode .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .info-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        body.light-mode .info-title {
+            color: #1e293b;
+        }
+        
+        body.dark-mode .info-title {
+            color: #ffffff;
+        }
+        
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .color-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        body.light-mode .color-item {
+            background: rgba(255, 255, 255, 0.25);
+            color: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 2px 8px rgba(31, 38, 135, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        body.dark-mode .color-item {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+        
+        .color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .examples-list {
+            list-style: none;
+        }
+        
+        .examples-list li {
+            padding: 8px 0;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.85rem;
+        }
+        
+        body.light-mode .examples-list li {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: #1e293b;
+        }
+        
+        body.dark-mode .examples-list li {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+        
+        .examples-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .examples-list code {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+        
+        body.light-mode .examples-list code {
+            background: rgba(99, 102, 241, 0.15);
+            color: #4338ca;
+        }
+        
+        body.dark-mode .examples-list code {
+            background: rgba(99, 102, 241, 0.2);
+            color: #c7d2fe;
+        }
+        
+        .special-note {
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+        
+        body.light-mode .special-note {
+            color: #64748b;
+        }
+        
+        body.dark-mode .special-note {
+            color: #a1a1aa;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            font-size: 0.9rem;
+        }
+        
+        body.light-mode .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            color: #475569;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+        
+        body.dark-mode .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #71717a;
+        }
+        
+        .footer-highlight {
+            color: #6366f1;
+            font-weight: 600;
+        }
+        
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .toggle-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .toggle-label {
+            color: #64748b;
+        }
+        
+        body.light-mode .toggle-label.active {
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        body.dark-mode .toggle-label {
+            color: #a1a1aa;
+        }
+        
+        body.dark-mode .toggle-label.active {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        body.light-mode .slider {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        body.dark-mode .slider {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        body.light-mode input:checked + .slider {
+            background: rgba(139, 92, 246, 0.4);
+            border-color: rgba(139, 92, 246, 0.7);
+        }
+        
+        body.dark-mode input:checked + .slider {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: #8b5cf6;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+        }
+        
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        body.light-mode .section-title {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.3));
+        }
+        
+        body.dark-mode .section-title {
+            color: #ffffff;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+        
+        body.light-mode .section-subtitle {
+            color: #475569;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+        
+        body.dark-mode .section-subtitle {
+            color: #a1a1aa;
+            opacity: 0.8;
+        }
+        
+        .demo-section {
+            margin-bottom: 48px;
+            padding: 24px;
+            border-radius: 16px;
+            position: relative;
+        }
+        
+        body.light-mode .demo-section {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        body.dark-mode .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .static-section {
+            margin-bottom: 32px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .main-grid, .info-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .demo-card, .info-card {
+                padding: 16px;
+            }
+            
+            .demo-section {
+                padding: 16px;
+                margin-bottom: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">GitHub Charts</h1>
+            <p class="tagline">Instant SVG contribution graphs</p>
+            
+            <div class="theme-toggle">
+                <span class="toggle-label">Light</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="toggle-label">Dark</span>
+            </div>
+        </header>
+        
+        <div class="demo-section">
+            <h2 class="section-title">Interactive Theme Demo</h2>
+            <p class="section-subtitle">Toggle the switch above to see charts change themes dynamically</p>
+            
+            <div class="main-grid">
+                <div class="demo-card">
+                    <h2 class="demo-title">Default Theme</h2>
+                    <p class="demo-subtitle">Adapts to website theme</p>
+                    <div class="endpoint" id="dynamic-endpoint1">/{username}</div>
+                    <div class="chart-preview">
+                        <img id="dynamic-chart1" src="/torvalds" alt="Dynamic theme contributions" loading="lazy">
+                    </div>
+                </div>
+                
+                <div class="demo-card">
+                    <h2 class="demo-title">Custom Color</h2>
+                    <p class="demo-subtitle">Orange theme adapts to mode</p>
+                    <div class="endpoint" id="dynamic-endpoint2">/ff5722/{username}</div>
+                    <div class="chart-preview">
+                        <img id="dynamic-chart2" src="/ff5722/torvalds" alt="Dynamic orange contributions" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="static-section">
+            <h2 class="section-title">All Theme Examples</h2>
+            <p class="section-subtitle">Static examples showing all available themes</p>
+            
+            <div class="main-grid">
+            <div class="demo-card">
+                <h2 class="demo-title">Light Theme</h2>
+                <p class="demo-subtitle">Classic GitHub style</p>
+                <div class="endpoint">/{username}</div>
+                <div class="chart-preview">
+                    <img id="chart1" src="/torvalds" alt="GitHub contributions" loading="lazy">
+                </div>
+            </div>
+            
+            <div class="demo-card">
+                <h2 class="demo-title">Dark Theme</h2>
+                <p class="demo-subtitle">Modern dark mode</p>
+                <div class="endpoint">/dark:default/{username}</div>
+                <div class="chart-preview">
+                    <img src="/dark:default/torvalds" alt="Dark theme contributions" loading="lazy">
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-grid">
+            <div class="demo-card">
+                <h2 class="demo-title">Light + Color</h2>
+                <p class="demo-subtitle">Custom colors, light background</p>
+                <div class="endpoint">/light:ff5722/{username}</div>
+                <div class="chart-preview">
+                    <img src="/light:ff5722/torvalds" alt="Light theme custom color" loading="lazy">
+                </div>
+            </div>
+            
+            <div class="demo-card">
+                <h2 class="demo-title">Dark + Color</h2>
+                <p class="demo-subtitle">Custom colors, dark background</p>
+                <div class="endpoint">/dark:6366f1/{username}</div>
+                <div class="chart-preview">
+                    <img src="/dark:6366f1/torvalds" alt="Dark theme custom color" loading="lazy">
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-card">
+                <h3 class="info-title">Colors</h3>
+                <div class="color-palette">
+                    <div class="color-item">
+                        <div class="color-dot" style="background: #6366f1;"></div>
+                        6366f1
+                    </div>
+                    <div class="color-item">
+                        <div class="color-dot" style="background: #ef4444;"></div>
+                        ef4444
+                    </div>
+                    <div class="color-item">
+                        <div class="color-dot" style="background: #8b5cf6;"></div>
+                        8b5cf6
+                    </div>
+                    <div class="color-item">
+                        <div class="color-dot" style="background: #06b6d4;"></div>
+                        06b6d4
+                    </div>
+                </div>
+                <p class="special-note">Special themes: halloween, teal</p>
+            </div>
+            
+            <div class="info-card">
+                <h3 class="info-title">Examples</h3>
+                <ul class="examples-list">
+                    <li><code>/octocat</code></li>
+                    <li><code>/dark:default/torvalds</code></li>
+                    <li><code>/light:6366f1/torvalds</code></li>
+                    <li><code>/dark:halloween/octocat</code></li>
+                    <li><code>/ff5722/torvalds</code> (legacy)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>Built with <span class="footer-highlight">Go</span> • Real-time data</p>
+        </footer>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const toggleLabels = document.querySelectorAll('.toggle-label');
+        
+        function updateTheme(isDark) {
+            document.body.className = isDark ? 'dark-mode' : 'light-mode';
+            toggleLabels[0].classList.toggle('active', !isDark);
+            toggleLabels[1].classList.toggle('active', isDark);
+            
+            // Update dynamic charts based on theme
+            const dynamicChart1 = document.getElementById('dynamic-chart1');
+            const dynamicChart2 = document.getElementById('dynamic-chart2');
+            const dynamicEndpoint1 = document.getElementById('dynamic-endpoint1');
+            const dynamicEndpoint2 = document.getElementById('dynamic-endpoint2');
+            
+            if (isDark) {
+                // Switch to dark theme charts
+                dynamicChart1.src = '/dark:default/torvalds';
+                dynamicChart2.src = '/dark:ff5722/torvalds';
+                dynamicEndpoint1.textContent = '/dark:default/{username}';
+                dynamicEndpoint2.textContent = '/dark:ff5722/{username}';
+            } else {
+                // Switch to light theme charts
+                dynamicChart1.src = '/torvalds';
+                dynamicChart2.src = '/ff5722/torvalds';
+                dynamicEndpoint1.textContent = '/{username}';
+                dynamicEndpoint2.textContent = '/ff5722/{username}';
+            }
+        }
+        
+        updateTheme(false);
+        
+        themeToggle.addEventListener('change', function() {
+            updateTheme(this.checked);
+        });
+    </script>
+</body>
+</html>
