@@ -27,12 +27,16 @@ func NewGenerator(githubService *services.GitHubService) *Generator {
 }
 
 func (g *Generator) Generate(username, baseColor string) ([]byte, error) {
+	return g.GenerateWithTheme(username, baseColor, "light")
+}
+
+func (g *Generator) GenerateWithTheme(username, baseColor, theme string) ([]byte, error) {
 	data, err := g.githubService.FetchContributions(username)
 	if err != nil {
 		return nil, err
 	}
 
-	colors := GetColorScheme(baseColor)
+	colors := GetColorSchemeWithTheme(baseColor, theme)
 	svg := g.buildSVG(data, colors)
 	
 	return []byte(svg), nil
@@ -45,7 +49,6 @@ func (g *Generator) buildSVG(data *services.ContributionYear, colors []string) s
 	var svg strings.Builder
 	
 	svg.WriteString(fmt.Sprintf(`<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg">`, totalWidth, totalHeight))
-	svg.WriteString(fmt.Sprintf(`<rect width="%d" height="%d" fill="white"/>`, totalWidth, totalHeight))
 	svg.WriteString(fmt.Sprintf(`<g transform="translate(%d,%d)">`, Padding, Padding))
 
 	dateMap := make(map[string]services.ContributionData)
