@@ -4,13 +4,13 @@
 
 Generate beautiful GitHub contribution charts as transparent SVG images with support for both light and dark themes, custom colors, and seamless integration into any website or documentation.
 
-![GitHub Charts Demo](https://your-domain.com/demo-image.png)
+![GitHub Charts Demo](https://ghchart.xqsit94.in/xqsit94)
 
 ## ✨ Features
 
 - 🎨 **Light & Dark Themes** - Automatic theme adaptation for any background
 - 🌈 **Custom Colors** - Any hex color or predefined themes
-- ⚡ **Lightning Fast** - Built with Go and optimized for performance  
+- ⚡ **Lightning Fast** - Built with Go and optimized for performance
 - 🔍 **Transparent SVG** - Perfect integration with any design
 - 📱 **Interactive Demo** - Beautiful homepage with live theme switching
 - 🔗 **Simple API** - Clean, RESTful endpoints
@@ -21,21 +21,21 @@ Generate beautiful GitHub contribution charts as transparent SVG images with sup
 ### Basic Usage
 ```html
 <!-- Light theme (default) -->
-<img src="https://your-domain.com/username" alt="GitHub Contributions">
+<img src="https://ghchart.xqsit94.in/username" alt="GitHub Contributions">
 
 <!-- Dark theme -->
-<img src="https://your-domain.com/dark:default/username" alt="GitHub Contributions">
+<img src="https://ghchart.xqsit94.in/dark:default/username" alt="GitHub Contributions">
 
 <!-- Custom colors -->
-<img src="https://your-domain.com/light:ff5722/username" alt="GitHub Contributions">
-<img src="https://your-domain.com/dark:6366f1/username" alt="GitHub Contributions">
+<img src="https://ghchart.xqsit94.in/light:ff5722/username" alt="GitHub Contributions">
+<img src="https://ghchart.xqsit94.in/dark:6366f1/username" alt="GitHub Contributions">
 ```
 
 ### Markdown
 ```markdown
-![GitHub Contributions](https://your-domain.com/username)
-![Dark Theme](https://your-domain.com/dark:default/username)
-![Custom Orange](https://your-domain.com/light:ff5722/username)
+![GitHub Contributions](https://ghchart.xqsit94.in/username)
+![Dark Theme](https://ghchart.xqsit94.in/dark:default/username)
+![Custom Orange](https://ghchart.xqsit94.in/light:ff5722/username)
 ```
 
 ## 📖 API Reference
@@ -47,7 +47,7 @@ GET /{color}/{username}
 GET /{username}?theme=light
 ```
 
-### Dark Theme  
+### Dark Theme
 ```
 GET /dark:default/{username}
 GET /dark:{color}/{username}
@@ -144,7 +144,7 @@ CMD ["./ghchart"]
 ### Custom Colors
 Use any hex color (without the `#`):
 - `ff5722` - Orange
-- `6366f1` - Blue  
+- `6366f1` - Blue
 - `8b5cf6` - Purple
 - `ef4444` - Red
 - `10b981` - Emerald
@@ -157,7 +157,7 @@ Use any hex color (without the `#`):
 /light:ff5722/username      # Orange light (new format)
 /halloween/username         # Halloween light
 
-# Dark theme examples  
+# Dark theme examples
 /dark:default/username      # Default dark
 /dark:ff5722/username       # Orange dark
 /dark:halloween/username    # Halloween dark
@@ -174,9 +174,9 @@ Use any hex color (without the `#`):
 ```html
 <!-- Adapts to system theme -->
 <picture>
-  <source srcset="https://your-domain.com/dark:default/username" 
+  <source srcset="https://ghchart.xqsit94.in/dark:default/username"
           media="(prefers-color-scheme: dark)">
-  <img src="https://your-domain.com/username" alt="GitHub Contributions">
+  <img src="https://ghchart.xqsit94.in/username" alt="GitHub Contributions">
 </picture>
 ```
 
@@ -203,7 +203,7 @@ Use any hex color (without the `#`):
 function updateGitHubChart(username, isDark) {
   const img = document.getElementById('github-chart');
   const theme = isDark ? 'dark:default' : '';
-  const url = `https://your-domain.com/${theme}${theme ? '/' : ''}${username}`;
+  const url = `https://ghchart.xqsit94.in/${theme}${theme ? '/' : ''}${username}`;
   img.src = url;
 }
 ```
@@ -289,5 +289,5 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🙏 Acknowledgments
 
 - Inspired by the original [ghchart](https://github.com/2016rshah/githubchart-api) project
-- Built with [Go](https://golang.org/) and [Chi Router](https://github.com/go-chi/chi)
+- Built with [Go](https://golang.org/)
 - GitHub contribution data fetched from public GitHub pages

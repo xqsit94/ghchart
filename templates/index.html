@@ -59,7 +59,7 @@
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1400px;
             width: 100%;
             backdrop-filter: blur(20px);
             border-radius: 20px;
@@ -568,7 +568,7 @@
             <div class="theme-toggle">
                 <span class="toggle-label">Light</span>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="themeToggle">
+                    <input type="checkbox" id="themeToggle" checked>
                     <span class="slider"></span>
                 </label>
                 <span class="toggle-label">Dark</span>
@@ -583,18 +583,18 @@
                 <div class="demo-card">
                     <h2 class="demo-title">Default Theme</h2>
                     <p class="demo-subtitle">Adapts to website theme</p>
-                    <div class="endpoint" id="dynamic-endpoint1">/{username}</div>
+                    <div class="endpoint" id="dynamic-endpoint1">{{.DomainPrefix}}/{username}</div>
                     <div class="chart-preview">
-                        <img id="dynamic-chart1" src="/torvalds" alt="Dynamic theme contributions" loading="lazy">
+                        <img id="dynamic-chart1" src="{{.DomainPrefix}}/torvalds" alt="Dynamic theme contributions" loading="lazy">
                     </div>
                 </div>
                 
                 <div class="demo-card">
                     <h2 class="demo-title">Custom Color</h2>
                     <p class="demo-subtitle">Orange theme adapts to mode</p>
-                    <div class="endpoint" id="dynamic-endpoint2">/ff5722/{username}</div>
+                    <div class="endpoint" id="dynamic-endpoint2">{{.DomainPrefix}}/ff5722/{username}</div>
                     <div class="chart-preview">
-                        <img id="dynamic-chart2" src="/ff5722/torvalds" alt="Dynamic orange contributions" loading="lazy">
+                        <img id="dynamic-chart2" src="{{.DomainPrefix}}/ff5722/torvalds" alt="Dynamic orange contributions" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -608,18 +608,18 @@
             <div class="demo-card">
                 <h2 class="demo-title">Light Theme</h2>
                 <p class="demo-subtitle">Classic GitHub style</p>
-                <div class="endpoint">/{username}</div>
+                <div class="endpoint">{{.DomainPrefix}}/{username}</div>
                 <div class="chart-preview">
-                    <img id="chart1" src="/torvalds" alt="GitHub contributions" loading="lazy">
+                    <img id="chart1" src="{{.DomainPrefix}}/torvalds" alt="GitHub contributions" loading="lazy">
                 </div>
             </div>
             
             <div class="demo-card">
                 <h2 class="demo-title">Dark Theme</h2>
                 <p class="demo-subtitle">Modern dark mode</p>
-                <div class="endpoint">/dark:default/{username}</div>
+                <div class="endpoint">{{.DomainPrefix}}/dark:default/{username}</div>
                 <div class="chart-preview">
-                    <img src="/dark:default/torvalds" alt="Dark theme contributions" loading="lazy">
+                    <img src="{{.DomainPrefix}}/dark:default/torvalds" alt="Dark theme contributions" loading="lazy">
                 </div>
             </div>
         </div>
@@ -628,18 +628,18 @@
             <div class="demo-card">
                 <h2 class="demo-title">Light + Color</h2>
                 <p class="demo-subtitle">Custom colors, light background</p>
-                <div class="endpoint">/light:ff5722/{username}</div>
+                <div class="endpoint">{{.DomainPrefix}}/light:ff5722/{username}</div>
                 <div class="chart-preview">
-                    <img src="/light:ff5722/torvalds" alt="Light theme custom color" loading="lazy">
+                    <img src="{{.DomainPrefix}}/light:ff5722/torvalds" alt="Light theme custom color" loading="lazy">
                 </div>
             </div>
             
             <div class="demo-card">
                 <h2 class="demo-title">Dark + Color</h2>
                 <p class="demo-subtitle">Custom colors, dark background</p>
-                <div class="endpoint">/dark:6366f1/{username}</div>
+                <div class="endpoint">{{.DomainPrefix}}/dark:6366f1/{username}</div>
                 <div class="chart-preview">
-                    <img src="/dark:6366f1/torvalds" alt="Dark theme custom color" loading="lazy">
+                    <img src="{{.DomainPrefix}}/dark:6366f1/torvalds" alt="Dark theme custom color" loading="lazy">
                 </div>
             </div>
         </div>
@@ -671,11 +671,11 @@
             <div class="info-card">
                 <h3 class="info-title">Examples</h3>
                 <ul class="examples-list">
-                    <li><code>/octocat</code></li>
-                    <li><code>/dark:default/torvalds</code></li>
-                    <li><code>/light:6366f1/torvalds</code></li>
-                    <li><code>/dark:halloween/octocat</code></li>
-                    <li><code>/ff5722/torvalds</code> (legacy)</li>
+                    <li><code>{{.DomainPrefix}}/octocat</code></li>
+                    <li><code>{{.DomainPrefix}}/dark:default/torvalds</code></li>
+                    <li><code>{{.DomainPrefix}}/light:6366f1/torvalds</code></li>
+                    <li><code>{{.DomainPrefix}}/dark:halloween/octocat</code></li>
+                    <li><code>{{.DomainPrefix}}/ff5722/torvalds</code> (legacy)</li>
                 </ul>
             </div>
         </div>
@@ -700,22 +700,22 @@
             const dynamicEndpoint1 = document.getElementById('dynamic-endpoint1');
             const dynamicEndpoint2 = document.getElementById('dynamic-endpoint2');
             
+            const domainPrefix = '{{.DomainPrefix}}';
+            
             if (isDark) {
-                // Switch to dark theme charts
-                dynamicChart1.src = '/dark:default/torvalds';
-                dynamicChart2.src = '/dark:ff5722/torvalds';
-                dynamicEndpoint1.textContent = '/dark:default/{username}';
-                dynamicEndpoint2.textContent = '/dark:ff5722/{username}';
+                dynamicChart1.src = domainPrefix + '/dark:default/torvalds';
+                dynamicChart2.src = domainPrefix + '/dark:ff5722/torvalds';
+                dynamicEndpoint1.textContent = domainPrefix + '/dark:default/{username}';
+                dynamicEndpoint2.textContent = domainPrefix + '/dark:ff5722/{username}';
             } else {
-                // Switch to light theme charts
-                dynamicChart1.src = '/torvalds';
-                dynamicChart2.src = '/ff5722/torvalds';
-                dynamicEndpoint1.textContent = '/{username}';
-                dynamicEndpoint2.textContent = '/ff5722/{username}';
+                dynamicChart1.src = domainPrefix + '/torvalds';
+                dynamicChart2.src = domainPrefix + '/ff5722/torvalds';
+                dynamicEndpoint1.textContent = domainPrefix + '/{username}';
+                dynamicEndpoint2.textContent = domainPrefix + '/ff5722/{username}';
             }
         }
         
-        updateTheme(false);
+        updateTheme(true);
         
         themeToggle.addEventListener('change', function() {
             updateTheme(this.checked);
