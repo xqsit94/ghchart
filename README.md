@@ -130,7 +130,24 @@ CMD ["./ghchart"]
 
 ## Environment Variables
 
-- `PORT` - Server port (default: 8080)
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `8080` | Server port |
+| `DOMAIN_PREFIX` | `https://ghchart.xqsit94.in` | Domain prefix for frontend URLs |
+
+### Local Development Setup
+
+1. Copy the environment template:
+```bash
+cp .env.example .env
+```
+
+2. Edit `.env` with your local settings:
+```bash
+# For local development
+DOMAIN_PREFIX=http://localhost:8080
+PORT=8080
+```
 
 ## 🎨 Color Schemes & Themes
 
