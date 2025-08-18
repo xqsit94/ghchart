@@ -9,12 +9,15 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"github.com/xqsit94/ghchart/internal/chart"
 	"github.com/xqsit94/ghchart/internal/handlers"
 	"github.com/xqsit94/ghchart/internal/services"
 )
 
 func main() {
+	godotenv.Load()
+	
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
