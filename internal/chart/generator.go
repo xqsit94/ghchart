@@ -38,12 +38,12 @@ func (g *Generator) GenerateWithTheme(username, baseColor, theme string) ([]byte
 	}
 
 	colors := GetColorSchemeWithTheme(baseColor, theme)
-	svg := g.buildSVG(data, colors)
+	svg := g.buildSVG(data, colors, theme)
 
 	return []byte(svg), nil
 }
 
-func (g *Generator) buildSVG(data *services.ContributionYear, colors []string) string {
+func (g *Generator) buildSVG(data *services.ContributionYear, colors []string, theme string) string {
 	totalWidth := Width + 2*Padding + LabelOffset
 	totalHeight := Height + 2*Padding + LabelOffset
 
@@ -51,9 +51,14 @@ func (g *Generator) buildSVG(data *services.ContributionYear, colors []string) s
 
 	svg.WriteString(fmt.Sprintf(`<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg">`, totalWidth, totalHeight))
 
+	labelColor := "#1f2328"
+	if strings.ToLower(theme) == "dark" {
+		labelColor = "#cecece"
+	}
+
 	svg.WriteString(`<style>`)
-	svg.WriteString(`.month-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: #1f2328; }`)
-	svg.WriteString(`.day-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: #1f2328; }`)
+	svg.WriteString(fmt.Sprintf(`.month-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: %s; }`, labelColor))
+	svg.WriteString(fmt.Sprintf(`.day-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: %s; }`, labelColor))
 	svg.WriteString(`</style>`)
 
 	svg.WriteString(fmt.Sprintf(`<g transform="translate(%d,%d)">`, Padding+LabelOffset, Padding+LabelOffset))
