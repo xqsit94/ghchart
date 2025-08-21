@@ -44,11 +44,8 @@ func (g *Generator) GenerateWithTheme(username, baseColor, theme string) ([]byte
 }
 
 func (g *Generator) buildSVG(data *services.ContributionYear, colors []string, theme string) string {
-	rightPadding := Padding + LabelOffset
-	bottomPadding := Padding + LabelOffset
-
-	totalWidth := Width + Padding + LabelOffset + rightPadding
-	totalHeight := Height + Padding + LabelOffset + bottomPadding
+	totalWidth := Width + Padding + LabelOffset
+	totalHeight := Height + LabelOffset
 
 	var svg strings.Builder
 
@@ -64,7 +61,7 @@ func (g *Generator) buildSVG(data *services.ContributionYear, colors []string, t
 	svg.WriteString(fmt.Sprintf(`.day-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: %s; }`, labelColor))
 	svg.WriteString(`</style>`)
 
-	svg.WriteString(fmt.Sprintf(`<g transform="translate(%d,%d)">`, Padding+LabelOffset, Padding+LabelOffset))
+	svg.WriteString(fmt.Sprintf(`<g transform="translate(%d,%d)">`, Padding+LabelOffset, LabelOffset))
 
 	dateMap := make(map[string]services.ContributionData)
 	for _, contrib := range data.Contributions {
