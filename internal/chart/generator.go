@@ -11,8 +11,8 @@ import (
 const (
 	CellSize    = 12
 	CellGap     = 3
-	Width       = 53 * (CellSize + CellGap) - CellGap
-	Height      = 7 * (CellSize + CellGap) - CellGap
+	Width       = 53*(CellSize+CellGap) - CellGap
+	Height      = 7*(CellSize+CellGap) - CellGap
 	Padding     = 20
 	LabelOffset = 15
 )
@@ -44,8 +44,11 @@ func (g *Generator) GenerateWithTheme(username, baseColor, theme string) ([]byte
 }
 
 func (g *Generator) buildSVG(data *services.ContributionYear, colors []string, theme string) string {
-	totalWidth := Width + 2*Padding + LabelOffset
-	totalHeight := Height + 2*Padding + LabelOffset
+	rightPadding := Padding + LabelOffset
+	bottomPadding := Padding + LabelOffset
+
+	totalWidth := Width + Padding + LabelOffset + rightPadding
+	totalHeight := Height + Padding + LabelOffset + bottomPadding
 
 	var svg strings.Builder
 
@@ -83,7 +86,7 @@ func (g *Generator) buildSVG(data *services.ContributionYear, colors []string, t
 	dayLabels := []string{"", "Mon", "", "Wed", "", "Fri", ""}
 	for i, label := range dayLabels {
 		if label != "" {
-			y := i * (CellSize + CellGap) + CellSize/2
+			y := i*(CellSize+CellGap) + CellSize/2
 			svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" text-anchor="end" class="day-label" dominant-baseline="middle">%s</text>`,
 				-5, y, label))
 		}

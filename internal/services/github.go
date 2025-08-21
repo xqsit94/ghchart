@@ -36,15 +36,15 @@ func NewGitHubService() *GitHubService {
 
 func (g *GitHubService) FetchContributions(username string) (*ContributionYear, error) {
 	url := fmt.Sprintf("https://github.com/users/%s/contributions", username)
-	
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
-	
+
 	resp, err := g.client.Do(req)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (g *GitHubService) FetchContributions(username string) (*ContributionYear, 
 		if !exists {
 			return
 		}
-		
+
 		levelStr, exists := s.Attr("data-level")
 		if !exists {
 			return

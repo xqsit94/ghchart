@@ -20,7 +20,7 @@ func NewIndexHandler() (*IndexHandler, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &IndexHandler{
 		template: tmpl,
 	}, nil
@@ -31,11 +31,11 @@ func (h *IndexHandler) Index(w http.ResponseWriter, r *http.Request) {
 	if domainPrefix == "" {
 		domainPrefix = "https://ghchart.xqsit94.in"
 	}
-	
+
 	data := IndexData{
 		DomainPrefix: domainPrefix,
 	}
-	
+
 	w.Header().Set("Content-Type", "text/html")
 	if err := h.template.Execute(w, data); err != nil {
 		http.Error(w, "Failed to render template", http.StatusInternalServerError)
