@@ -26,12 +26,12 @@ func (h *ChartHandler) DefaultChart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username = services.RemoveExtension(username, ".svg")
-	
+
 	theme := r.URL.Query().Get("theme")
 	if theme == "" {
 		theme = "light"
 	}
-	
+
 	chartData, err := h.generator.GenerateWithTheme(username, "", theme)
 	if err != nil {
 		http.Error(w, "Failed to generate chart", http.StatusInternalServerError)
@@ -45,19 +45,19 @@ func (h *ChartHandler) DefaultChart(w http.ResponseWriter, r *http.Request) {
 func (h *ChartHandler) CustomColorChart(w http.ResponseWriter, r *http.Request) {
 	color := chi.URLParam(r, "color")
 	username := chi.URLParam(r, "username")
-	
+
 	if username == "" || color == "" {
 		http.Error(w, "Username and color are required", http.StatusBadRequest)
 		return
 	}
 
 	username = services.RemoveExtension(username, ".svg")
-	
+
 	theme := r.URL.Query().Get("theme")
 	if theme == "" {
 		theme = "light"
 	}
-	
+
 	chartData, err := h.generator.GenerateWithTheme(username, color, theme)
 	if err != nil {
 		http.Error(w, "Failed to generate chart", http.StatusInternalServerError)
@@ -71,16 +71,16 @@ func (h *ChartHandler) CustomColorChart(w http.ResponseWriter, r *http.Request) 
 func (h *ChartHandler) ThemeColorChart(w http.ResponseWriter, r *http.Request) {
 	themeColor := chi.URLParam(r, "themeColor")
 	username := chi.URLParam(r, "username")
-	
+
 	if username == "" || themeColor == "" {
 		http.Error(w, "Username and theme:color are required", http.StatusBadRequest)
 		return
 	}
 
 	username = services.RemoveExtension(username, ".svg")
-	
+
 	theme, color := chart.ParseThemeColor(themeColor)
-	
+
 	chartData, err := h.generator.GenerateWithTheme(username, color, theme)
 	if err != nil {
 		http.Error(w, "Failed to generate chart", http.StatusInternalServerError)
