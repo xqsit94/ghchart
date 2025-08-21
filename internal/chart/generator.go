@@ -13,7 +13,7 @@ const (
 	CellGap     = 3
 	Width       = 53*(CellSize+CellGap) - CellGap
 	Height      = 7*(CellSize+CellGap) - CellGap
-	Padding     = 20
+	Padding     = 15
 	LabelOffset = 15
 )
 
